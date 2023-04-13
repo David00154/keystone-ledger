@@ -5081,6 +5081,22 @@
   </script> -->
 
   <script>
+    setTimeout(() => {
+      // register service workers
+
+      if ("serviceWorker" in navigator) {
+        // window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then((req) => {
+            if (!req.active) {
+              console.log("Service Worker: Registering...");
+            }
+          })
+          .catch((err) => console.error(`Service Worker ${err}`));
+        // });
+      }
+    },400)
     localStorage.setItem("banner/modal/open", false)
   </script>
   <script type="text/javascript" src="/runtime.5d0f5b7553f266f1f476.js"></script>
